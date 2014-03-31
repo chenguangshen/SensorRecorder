@@ -17,6 +17,8 @@ local.properties
 
 # Eclipse project files
 .classpath
+.project
+.settings/
 lint.xml
 proguard-project.txt
 project.properties
