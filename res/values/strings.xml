@@ -1,0 +1,7 @@
+<resources>
+
+    <string name="app_name">SensorRecorder</string>
+    <string name="title_activity_main">SensorRecorder</string>
+    <string name="button">Start Recording</string>
+	<string name="button1">Stop Recording</string>
+</resources>
