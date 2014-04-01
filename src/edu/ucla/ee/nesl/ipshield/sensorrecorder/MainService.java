@@ -24,7 +24,7 @@ public class MainService extends Service implements SensorEventListener {
 	private final IBinder mBinder = new LocalBinder();
 	private SensorManager mSensorManager;
 	private Sensor mAcc;
-	private ArrayList<SensorEvent> sensorBuffer;
+	private ArrayList<SensorVector> sensorBuffer;
 	
 	public class LocalBinder extends Binder {
 		MainService getService() {
@@ -33,13 +33,42 @@ public class MainService extends Service implements SensorEventListener {
         }
     }
 	
+	class SensorVector {
+		private float x, y, z;
+
+		public float getX() {
+			return x;
+		}
+
+		public void setX(float x) {
+			this.x = x;
+		}
+
+		public float getY() {
+			return y;
+		}
+
+		public void setY(float y) {
+			this.y = y;
+		}
+
+		public float getZ() {
+			return z;
+		}
+
+		public void setZ(float z) {
+			this.z = z;
+		}
+	}
+	
 	public void init() {
 		mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
 		mAcc = (Sensor) mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-		sensorBuffer = new ArrayList<SensorEvent>();
+		sensorBuffer = new ArrayList<SensorVector>();
 	}
 
 	public void startRecording() {
+		sensorBuffer.clear();
 		mSensorManager.registerListener(this, mAcc, SensorManager.SENSOR_DELAY_NORMAL);
 	}
 	
@@ -51,8 +80,9 @@ public class MainService extends Service implements SensorEventListener {
 		file = new File(dir, "SensorRecording_" + new Date().toString() + ".txt");
 		try {
 			BufferedWriter bw = new BufferedWriter(new FileWriter(file));
-			for (SensorEvent event:sensorBuffer) {
-				bw.append(event.values[0] + ","+ event.values[1] + "," + event.values[2] + "\n");
+			for (SensorVector event:sensorBuffer) {
+				bw.write(event.getX() + ","+ event.getY() + "," + event.getZ() + "\n");
+				Log.i(TAG, event.getX() + ","+ event.getY() + "," + event.getZ() + "\n");
 			}
 			bw.flush();
 			bw.close();
@@ -78,7 +108,12 @@ public class MainService extends Service implements SensorEventListener {
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		sensorBuffer.add(event);
+		SensorVector sv = new SensorVector();
+		sv.setX(event.values[0]);
+		sv.setY(event.values[1]);
+		sv.setZ(event.values[2]);
+		sensorBuffer.add(sv);
+		Log.i(TAG, "x=" + event.values[0]);
 	}
 	
 

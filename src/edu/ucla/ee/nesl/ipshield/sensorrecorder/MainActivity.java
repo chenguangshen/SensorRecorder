@@ -13,7 +13,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
 import edu.ucla.ee.nesl.ipshield.sensorrecorder.MainService.LocalBinder;
-import edu.ucla.nesl.mca.R;
 
 public class MainActivity extends Activity {	
 	private MainService mService;
@@ -73,6 +72,16 @@ public class MainActivity extends Activity {
     protected void onPause() {
     	super.onResume(); 
     }
+    
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }
+    }
+    
     
     private ServiceConnection mConnection = new ServiceConnection() {
         @Override
